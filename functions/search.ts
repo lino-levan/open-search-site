@@ -2,7 +2,7 @@ import { Handler } from "@netlify/functions"
 
 import { MongoClient } from "mongodb";
 
-const uri = "bruh"
+const uri = process.env.MONGO_URI
 
 const handler: Handler = async (event, context) => {
   try{
