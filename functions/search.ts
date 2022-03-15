@@ -8,6 +8,10 @@ function generateRegex(term: string) {
   return new RegExp(term.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1"), "i")
 }
 
+function sigmoid(num: number) {
+  return 1/(1 + Math.pow(Math.E, -num))
+}
+
 // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
 function uniqBy(a: any, key: any) {
   var seen = {};
@@ -39,7 +43,18 @@ const handler: Handler = async (event, context) => {
     results = uniqBy(results, (result)=>result.href)
     results = uniqBy(results, (result)=>result.title)
 
-    results = results.sort((a, b)=> b.numLinks - a.numLinks)
+    results = results.map((result)=>{
+      let sources = sigmoid(result.numLinks/100) * 3
+      let titleLength = sigmoid(50-result.title.length) * 3
+      let isInTitle = regex.test(result.title) ? 1 : 0
+
+      return {
+        ...result,
+        score: sources + titleLength + isInTitle
+      }
+    })
+
+    results = results.sort((a, b)=> b.score - a.score)
 
     await client.close()
 

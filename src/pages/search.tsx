@@ -26,11 +26,11 @@ function Search() {
         <div className='max-w-5xl w-full'>
           {
             search.map((result)=>(
-              <div className="w-full" key={result.href}>
+              <div className="w-full p-2" key={result.href}>
                 <a href={result.href}>
                   <p className='text-slate-400'>{result.href}</p>
                   <h2 className='text-blue-500 text-xl'>{result.title}</h2>
-                  <p className='text-slate-500'>{result.description}</p>
+                  <p className='text-slate-500'>{result.description || 'No Description Available'}</p>
                 </a>
               </div>
             ))
