@@ -4,7 +4,23 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGO_URI
 
+function generateRegex(term: string) { 
+  return new RegExp(term.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1"), "i")
+}
+
+// https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+function uniqBy(a: any, key: any) {
+  var seen = {};
+  return a.filter(function(item) {
+      var k = key(item);
+      return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+  })
+}
+
 const handler: Handler = async (event, context) => {
+
+  console.log(event.queryStringParameters)
+
   try{
     const client = new MongoClient(uri)
 
@@ -12,9 +28,17 @@ const handler: Handler = async (event, context) => {
 
     const raw = client.db("opensearch").collection("raw")
 
-    const results = await raw.find({}).toArray()
+    let regex = generateRegex(event.queryStringParameters.q)
 
-    client.close()
+    let results = [
+      ...(await raw.find({href:regex}).toArray()),
+      ...(await raw.find({title:regex}).toArray()),
+      ...(await raw.find({description:regex}).toArray())
+    ]
+    
+    results = uniqBy(results, (result)=>result.href)
+
+    await client.close()
 
     return {
       statusCode: 200,

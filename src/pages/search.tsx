@@ -13,7 +13,7 @@ function Search() {
   const query = useQuery()
 
   useEffect(()=>{
-    fetch('/.netlify/functions/search')
+    fetch(`/.netlify/functions/search?q=${query.get("q")}`)
       .then((res)=>res.json())
       // .then(console.log)
       .then(setSearch)
