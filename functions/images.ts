@@ -41,7 +41,6 @@ const handler: Handler = async (event, context) => {
     ]
     
     results = uniqBy(results, (result)=>result.src)
-    results = uniqBy(results, (result)=>result.href)
     results = uniqBy(results, (result)=>result.title)
 
     results = results.map((result)=>{

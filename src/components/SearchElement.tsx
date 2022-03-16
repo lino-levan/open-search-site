@@ -12,10 +12,10 @@ function SearchElement({result}: {result: ISearch}) {
 
   return (
     <div className="w-full p-2" key={result.href}>
-      <div className="w-min">
-        <a href={result.href} onMouseOver={()=>setHover(true)} onMouseOut={()=>setHover(false)}>
-          <p className='text-slate-400 hover:text-slate-700'>{result.href}</p>
-          <h2 className='text-blue-500 text-xl hover:text-blue-800'>{result.title}</h2>
+      <div>
+        <a href={result.href}>
+          <div><p className='text-slate-400 hover:text-slate-700 inline'>{result.href}</p></div>
+          <div><h2 onMouseOver={()=>setHover(true)} onMouseOut={()=>setHover(false)} className='text-blue-500 text-xl hover:text-blue-800 inline'>{result.title}</h2></div>
         </a>
       </div>
       <div className={`absolute shadow fade transition-all pointer-events-none ${hover? 'opacity-100' : 'opacity-0'}`}>
