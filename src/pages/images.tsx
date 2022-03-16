@@ -11,6 +11,7 @@ function Images() {
     fetch(`/.netlify/functions/images?q=${query.get("q")}`)
       .then((res)=>res.json())
       .then(setSearch)
+      .catch(console.log)
   }, [])
 
   return (

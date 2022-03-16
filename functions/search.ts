@@ -22,7 +22,6 @@ function uniqBy(a: any, key: any) {
 }
 
 const handler: Handler = async (event, context) => {
-
   console.log(event.queryStringParameters)
 
   try{
@@ -34,11 +33,17 @@ const handler: Handler = async (event, context) => {
 
     let regex = generateRegex(event.queryStringParameters.q)
 
-    let results = [
-      ...(await raw.find({href:regex}).toArray()),
-      ...(await raw.find({title:regex}).toArray()),
-      ...(await raw.find({description:regex}).toArray())
-    ]
+    let page = parseInt(event.queryStringParameters.page || '0')
+
+    let data = await Promise.all(
+      [
+        raw.find({href:regex}).toArray(),
+        raw.find({title:regex}).toArray(),
+        raw.find({description:regex}).toArray()
+      ]
+    )
+
+    let results = data[0].concat(data[1], data[2])
     
     results = uniqBy(results, (result)=>result.href)
     results = uniqBy(results, (result)=>result.title)
@@ -66,7 +71,7 @@ const handler: Handler = async (event, context) => {
           title: result.title,
           description: result.description,
           screenshot: result.screenshot
-        }))
+        })).slice(page * 20, (page + 1) * 20)
       )
     }
   }
