@@ -30,16 +30,17 @@ const handler: Handler = async (event, context) => {
 
     await client.connect()
 
-    const raw = client.db("opensearch").collection("raw")
+    const raw = client.db("opensearch").collection("images")
 
     let regex = generateRegex(event.queryStringParameters.q)
 
     let results = [
-      ...(await raw.find({href:regex}).toArray()),
+      ...(await raw.find({alt:regex}).toArray()),
       ...(await raw.find({title:regex}).toArray()),
       ...(await raw.find({description:regex}).toArray())
     ]
     
+    results = uniqBy(results, (result)=>result.src)
     results = uniqBy(results, (result)=>result.href)
     results = uniqBy(results, (result)=>result.title)
 
@@ -47,10 +48,11 @@ const handler: Handler = async (event, context) => {
       let sources = sigmoid(result.numLinks/100) * 3
       let titleLength = sigmoid(50-result.title.length) * 3
       let isInTitle = regex.test(result.title) ? 1 : 0
+      let hasAltText = result.alt.length > 0 ? 1 : 0
 
       return {
         ...result,
-        score: sources + titleLength + isInTitle
+        score: sources + titleLength + isInTitle + hasAltText
       }
     })
 
@@ -62,11 +64,13 @@ const handler: Handler = async (event, context) => {
       statusCode: 200,
       body: JSON.stringify(
         results.map((result)=>({
-          href: result.href,
+          src: result.src,
           title: result.title,
-          description: result.description,
-          screenshot: result.screenshot
-        })).slice(0, 20)
+          href: result.href,
+          alt: result.alt,
+          width: result.width,
+          height: result.height
+        }))
       )
     }
   }

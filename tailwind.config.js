@@ -4,7 +4,13 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        'xxs': ['10px', '0px'],
+      }
+    },
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-image-rendering')(),
+  ],
 }

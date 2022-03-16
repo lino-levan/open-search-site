@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import Header from '../components/Header'
-import SearchElement, { ISearch } from '../components/SearchElement';
+import ImageElement, { IImage } from '../components/ImageElement';
 import useQuery from '../lib/useQuery';
 
-function Search() {
-  const [search, setSearch] = useState<ISearch[]>([])
+function Images() {
+  const [search, setSearch] = useState<IImage[]>([])
   const query = useQuery()
 
   useEffect(()=>{
-    fetch(`/.netlify/functions/search?q=${query.get("q")}`)
+    fetch(`/.netlify/functions/images?q=${query.get("q")}`)
       .then((res)=>res.json())
       .then(setSearch)
   }, [])
@@ -17,10 +17,10 @@ function Search() {
     <>
       <Header/>
       <div className='flex justify-center p-4'>
-        <div className='max-w-3xl w-full'>
+        <div className='w-full flex flex-wrap justify-start'>
           {
             search.map((result)=>(
-              <SearchElement result={result}/>
+              <ImageElement result={result}/>
             ))
           }
         </div>
@@ -29,4 +29,4 @@ function Search() {
   )
 }
 
-export default Search
+export default Images
