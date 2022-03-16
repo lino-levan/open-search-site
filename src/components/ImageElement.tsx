@@ -11,7 +11,7 @@ export interface IImage {
 
 function ImageElement({result}: {result: IImage}) {
   const title = result.alt || result.title
-  const link = result.href
+  const link = new URL(result.href).host
 
   return (
     <div className="p-2">
