@@ -10,7 +10,9 @@ function SearchBar() {
         if(e.key === "Enter"){
           let input = e.target as HTMLInputElement
 
-          window.location.href = `/search?q=${encodeURIComponent(input.value)}`
+          if(input.value.length > 0) {
+            window.location.href = `/search?q=${encodeURIComponent(input.value)}`
+          }
         }
       }}/>
     </div>
