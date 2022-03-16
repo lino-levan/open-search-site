@@ -66,7 +66,7 @@ const handler: Handler = async (event, context) => {
           title: result.title,
           description: result.description,
           screenshot: result.screenshot
-        })).slice(0, 20)
+        }))
       )
     }
   }
